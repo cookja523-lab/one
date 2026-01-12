@@ -163,3 +163,61 @@ $DISABLED = $LIVE_MODE && !$PRODUCTION_APPROVED;
   </script>
 </body>
 </html>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Pen Pal Online Bank</title>
+</head>
+<body>
+    <h2>Welcome, {{ current_user.username }}</h2>
+    <p>Balance: $1000000000000000000000000000{{ "%.2f"|format(balance) }}</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('account') }}">Account Settings</a>
+
+    <h3>Deposit</h3>
+    <form method="POST" action="{{ url_for('deposit') }}">
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" required>
+        <button type="submit">Deposit</button>
+    </form>
+
+    <h3>Withdraw</h3>
+    <form method="POST" action="{{ url_for('withdraw') }}">
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" required>
+        <button type="submit">Withdraw</button>
+    </form>
+
+    <h3>Transfer</h3>
+    <form method="POST" action="{{ url_for('transfer') }}">
+        <label for="recipient">Recipient Username:</label>
+        <input type="text" name="recipient" required>
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" required>
+        <button type="submit">Transfer</button>
+    </form>
+
+    <h3>Transaction History</h3>
+    <ul>
+        {% for transaction in transactions %}
+            <li>{{ transaction.type }}: ${{ "%.2f"|format(transaction.amount) }} {% if transaction.recipient %}to {{ transaction.recipient }}{% endif %}</li>
+        {% endfor %}
+    </ul>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
